@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.AddMedicineForm1"
+    android:padding="@dimen/_20sdp"
+    >
+
+
+    <EditText
+        android:id="@+id/medName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        android:hint="Medicine Name"
+        android:inputType="text"
+        android:background="@drawable/dialog_background"
+        />
+
+    <ImageButton
+        android:id="@+id/more_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        app:layout_constraintEnd_toEndOf="@id/medName"
+        app:layout_constraintTop_toTopOf="@id/medName"
+        app:layout_constraintBottom_toBottomOf="@id/medName"
+        />
+
+
+    <View
+        android:id="@+id/viewMedName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        app:layout_constraintTop_toBottomOf="@id/medName"
+        android:background="@color/Gray"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:id="@+id/medFor"
+        app:layout_constraintTop_toBottomOf="@id/viewMedName"
+        android:textStyle="bold"
+        android:hint="For headache"
+        android:inputType="text"
+        android:background="@drawable/dialog_background"
+        />
+
+    <View
+        android:id="@+id/viewMedFor"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        app:layout_constraintTop_toBottomOf="@id/medFor"
+        android:background="@color/Gray"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/categoryRv"
+        app:layout_constraintTop_toBottomOf="@id/viewMedFor"
+        />
+
+    <View
+        android:id="@+id/viewCatRv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        app:layout_constraintTop_toBottomOf="@id/categoryRv"
+        android:background="@color/Gray"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/colorRv"
+        app:layout_constraintTop_toBottomOf="@id/categoryRv"
+        android:layout_marginTop="@dimen/_20sdp"
+        />
+
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:text="Next"
+        android:background="@drawable/button_border"
+        app:layout_constraintTop_toBottomOf="@id/colorRv"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/Blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

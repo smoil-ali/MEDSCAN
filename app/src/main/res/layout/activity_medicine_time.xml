@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MedicineTime">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/Blue"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/_20sdp"
+            android:layout_gravity="center"
+            android:text="Its time to take your medicine"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_70sdp"
+        app:layout_constraintTop_toBottomOf="@id/cardView1"
+        >
+
+      <TextView
+          android:id="@+id/medicineName"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/_26sdp"
+          android:textStyle="bold"
+          android:text="Medicine Name"
+          android:textColor="@color/Black"
+          android:layout_gravity="center"
+          />
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/taken"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_60sdp"
+        app:layout_constraintTop_toBottomOf="@id/cardView2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="TAKEN"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/White"
+        android:backgroundTint="@color/Blue"
+        app:layout_constraintRight_toLeftOf="@id/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_60sdp"
+        app:layout_constraintTop_toBottomOf="@id/cardView2"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="CANCEL"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/White"
+        android:backgroundTint="@color/Blue"
+        app:layout_constraintLeft_toRightOf="@id/taken"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
