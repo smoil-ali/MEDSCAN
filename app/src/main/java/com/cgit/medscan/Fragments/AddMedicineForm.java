@@ -119,15 +119,17 @@ public class AddMedicineForm extends Fragment implements QuantityListener, categ
     public void OpenDueSheet(){
         Intent intent = new Intent(getContext(), WorkingActivity.class);
         intent.putExtra(KEY,Constants.DUE_FRAGMENT);
-        getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
     }
 
     public void OpenIntervalSheet(){
         Intent intent = new Intent(getContext(), WorkingActivity.class);
         intent.putExtra(KEY,Constants.INTAKE_FRAGMENT);
-        getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
 
     }
 
@@ -288,6 +290,8 @@ public class AddMedicineForm extends Fragment implements QuantityListener, categ
         if (Container.getForm2ModelClass().getMedicineDuration() == 1){
             int size = Container.getForm2ModelClass().getDataList().size();
             return Container.getForm2ModelClass().getDataList().get(size-1);
+        }else if (Container.getForm2ModelClass().getMedicineDuration() == -1){
+            return -1;
         }else {
             Log.i(TAG, "Medicine Duration "+String.valueOf(Container.getForm2ModelClass().getMedicineDuration()));
             long endDate = Container.getForm2ModelClass().getStartTime() + getMilliSeconds(Container.getForm2ModelClass().getMedicineDuration());

@@ -2,6 +2,7 @@ package com.cgit.medscan.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -31,6 +32,7 @@ public class MedicineTime extends AppCompatActivity {
         bundle = getIntent().getExtras();
         model = (MedicalFormData) bundle.getSerializable("model");
         binding.taken.setOnClickListener(view -> updateStatus());
+        binding.cancel.setOnClickListener(view -> onCancel());
         setData();
 
     }
@@ -53,6 +55,10 @@ public class MedicineTime extends AppCompatActivity {
                     @Override
                     public void onComplete() {
                         Log.i(TAG,"update");
+                        startActivity(new Intent(MedicineTime.this,MainActivity.class));
+                        finishAffinity();
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
                     }
 
                     @Override
@@ -60,5 +66,10 @@ public class MedicineTime extends AppCompatActivity {
                         Log.i(TAG,e.getMessage());
                     }
                 });
+    }
+    private void onCancel(){
+        startActivity(new Intent(MedicineTime.this,MainActivity.class));
+        finishAffinity();
+        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
 }

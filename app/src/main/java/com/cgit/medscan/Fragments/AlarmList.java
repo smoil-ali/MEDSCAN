@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,10 @@ import com.cgit.medscan.Adapter.AlarmAdapter;
 import com.cgit.medscan.Adapter.TimeAdapter;
 import com.cgit.medscan.BroadCast.MyAlarm;
 import com.cgit.medscan.Dialogs.AlertSheet;
+import com.cgit.medscan.Dialogs.closeSheet;
 import com.cgit.medscan.Listeners.AlarmListener;
 import com.cgit.medscan.Listeners.AlertAlarmListener;
+import com.cgit.medscan.Listeners.closeListener;
 import com.cgit.medscan.Model.Container;
 import com.cgit.medscan.Model.MedicalFormData;
 import com.cgit.medscan.Model.Utils;
@@ -50,7 +53,7 @@ import io.reactivex.schedulers.Schedulers;
 import okio.Utf8;
 
 
-public class AlarmList extends Fragment implements AlarmListener, AlertAlarmListener {
+public class AlarmList extends Fragment implements AlarmListener, AlertAlarmListener, closeListener {
 
 
 
@@ -61,7 +64,7 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
     AlertSheet dialog = new AlertSheet();
     MedicalFormData model;
     Disposable disposable ;
-
+    closeSheet closeSheet = new closeSheet();
 
 
     @Override
@@ -69,8 +72,21 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
                              Bundle savedInstanceState) {
         binding = FragmentAlarmListBinding.inflate(inflater,container,false);
         binding.addButton.setOnClickListener(view -> openFragment());
-        TestMode();
 
+        binding.getRoot().setFocusableInTouchMode(true);
+        binding.getRoot().requestFocus();
+        binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if( keyCode == KeyEvent.KEYCODE_BACK )
+                {
+                    closeSheet.setListener(AlarmList.this);
+                    Utils.openDialog(getFragmentManager(),closeSheet);
+                    return true;
+                }
+                return false;
+            }
+        });
 
 
         setUpRecyclerView();
@@ -170,22 +186,20 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
     }
 
     @Override
+    public void OnExit() {
+        Objects.requireNonNull(getActivity()).finishAndRemoveTask();
+    }
+
+    @Override
+    public void OnCloseCancel() {
+        closeSheet.dismiss();
+    }
+
+    @Override
     public void OnCancel() {
         dialog.dismiss();
     }
 
-    private void TestMode(){
-        long timeInMillis = new Date().getTime();
-        int hrs = 1;
-        int min = 39;
-        long hrsInMillis= 1000*60*60*hrs;
-        long minInMillis = 1000*60*min;
 
 
-         for(int i =0 ;i<5;i++){
-             timeInMillis = timeInMillis+hrsInMillis+minInMillis;
-             Log.i(TAG, String.valueOf(new Date(timeInMillis)));
-         }
-
-    }
 }

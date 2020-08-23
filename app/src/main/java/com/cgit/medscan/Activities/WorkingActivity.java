@@ -2,6 +2,7 @@ package com.cgit.medscan.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.cgit.medscan.Fragments.DueMedicineFragment;
@@ -30,5 +31,11 @@ public class WorkingActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container,fragment).commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

@@ -115,16 +115,36 @@ public class MyAlarm extends BroadcastReceiver {
         int val = Utils.getSharedPref(context,alarmId);
         val-=1;
         Log.i(TAG, "Val = "+String.valueOf(val));
-        if (IsEndTime(medicalFormData.getEndTime())){
-            Log.i(TAG,"true");
-            if (val > 0){
-                // set next alarm
-                setAlarm(context,nextAlarm);
-                Utils.setSharedPref(context,(int) nextAlarm,val);
+        if (medicalFormData.getEndTime() != -1){
+            if (IsEndTime(medicalFormData.getEndTime())){
+                Log.i(TAG,"true");
+                if (val > 0){
+                    // set next alarm
+                    setAlarm(context,nextAlarm);
+                    Utils.setSharedPref(context,(int) nextAlarm,val);
+                }else {
+                    Log.i(TAG,"Finish Alarm!!!");
+                }
             }else {
-                Log.i(TAG,"Finish Alarm!!!");
+                Log.i(TAG,"false");
+                if (val > 0){
+                    // set next alarm
+                    setAlarm(context,nextAlarm);
+                    Utils.setSharedPref(context,(int) nextAlarm,val);
+                }else {
+                    Log.i(TAG,"Finish For Today!!!");
+                    val = medicalFormData.getMedicineTimeInDay();
+                    nextAlarm = getDayInterval();
+                    Log.i(TAG,"Next Alarm Date "+simpleDateFormat.format(new Date(nextAlarm)));
+                    int Id = (int) nextAlarm;
+                    updateInitialTime(context,Id,nextAlarm);
+                    setAlarm(context,nextAlarm);
+                    Utils.setSharedPref(context,(int) nextAlarm,val);
+                    // set Next Alarm
+                }
             }
-        }else {
+        }
+        else {
             Log.i(TAG,"false");
             if (val > 0){
                 // set next alarm
@@ -134,6 +154,7 @@ public class MyAlarm extends BroadcastReceiver {
                 Log.i(TAG,"Finish For Today!!!");
                 val = medicalFormData.getMedicineTimeInDay();
                 nextAlarm = getDayInterval();
+                Log.i(TAG,"Next Alarm Date "+simpleDateFormat.format(new Date(nextAlarm)));
                 int Id = (int) nextAlarm;
                 updateInitialTime(context,Id,nextAlarm);
                 setAlarm(context,nextAlarm);
