@@ -26,6 +26,7 @@ import com.cgit.medscan.Dialogs.AlertSheet;
 import com.cgit.medscan.Dialogs.closeSheet;
 import com.cgit.medscan.Listeners.AlarmListener;
 import com.cgit.medscan.Listeners.AlertAlarmListener;
+import com.cgit.medscan.Listeners.OnBackPressed;
 import com.cgit.medscan.Listeners.closeListener;
 import com.cgit.medscan.Model.Container;
 import com.cgit.medscan.Model.MedicalFormData;
@@ -53,7 +54,7 @@ import io.reactivex.schedulers.Schedulers;
 import okio.Utf8;
 
 
-public class AlarmList extends Fragment implements AlarmListener, AlertAlarmListener, closeListener {
+public class AlarmList extends Fragment implements AlarmListener, AlertAlarmListener, closeListener, OnBackPressed {
 
 
 
@@ -61,10 +62,11 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
     FragmentAlarmListBinding binding;
     AlarmAdapter adapter;
     List<MedicalFormData> list = new ArrayList<>();
+    List<MedicalFormData> solidList = new ArrayList<>();
     AlertSheet dialog = new AlertSheet();
     MedicalFormData model;
-    Disposable disposable ;
     closeSheet closeSheet = new closeSheet();
+    long currentTime = new Date().getTime();
 
 
     @Override
@@ -73,19 +75,36 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
         binding = FragmentAlarmListBinding.inflate(inflater,container,false);
         binding.addButton.setOnClickListener(view -> openFragment());
 
-        binding.getRoot().setFocusableInTouchMode(true);
-        binding.getRoot().requestFocus();
-        binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
+
+        /* starts before 1 month from now */
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.MONTH, -1);
+
+        /* ends after 1 month from now */
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.MONTH, 1);
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(binding.getRoot(), R.id.calendarView)
+                .range(startDate, endDate)
+                .datesNumberOnScreen(7)
+                .build();
+
+
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                if( keyCode == KeyEvent.KEYCODE_BACK )
-                {
-                    closeSheet.setListener(AlarmList.this);
-                    Utils.openDialog(getFragmentManager(),closeSheet);
-                    return true;
-                }
-                return false;
+            public void onDateSelected(Calendar date, int position) {
+                Log.i(TAG, "date selected "+String.valueOf(new Date(date.getTimeInMillis())));
+                currentTime = date.getTimeInMillis();
+                FilterData(solidList,currentTime);
             }
+
+            @Override
+            public void onCalendarScroll(HorizontalCalendarView calendarView, int dx, int dy) {
+                super.onCalendarScroll(calendarView, dx, dy);
+            }
+
+
         });
 
 
@@ -121,7 +140,8 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
                     public void onNext(List<MedicalFormData> medicalFormData) {
                         list.clear();
                         list.addAll(medicalFormData);
-                        adapter.notifyDataSetChanged();
+                        solidList.addAll(medicalFormData);
+                        FilterData(solidList,currentTime);
                     }
 
                     @Override
@@ -201,5 +221,37 @@ public class AlarmList extends Fragment implements AlarmListener, AlertAlarmList
     }
 
 
+    @Override
+    public void onBackPressed() {
+        closeSheet.setListener(AlarmList.this);
+        Utils.openDialog(getFragmentManager(),closeSheet);
+    }
+
+    private void FilterData(List<MedicalFormData> mList,long currentDate){
+        list.clear();
+        for (MedicalFormData medicalFormData :mList){
+            if (IsEndTime(medicalFormData.getMedicineTimeOfTaken(),currentDate)){
+                list.add(medicalFormData);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private boolean IsEndTime(long EndTime,long current){
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY,MM,dd");
+        String CurrentDate = sdf.format(new Date(current));
+        String[] currentDate = CurrentDate.split(",");
+        Log.i(TAG,"Current "+currentDate[0]+" "+currentDate[1]+" "+currentDate[2]);
+        String EndDate = sdf.format(new Date(EndTime));
+        String[] endDate = EndDate.split(",");
+        Log.i(TAG,"End "+endDate[0]+" "+endDate[1]+" "+endDate[2]);
+        if (currentDate[0].equals(endDate[0]) && currentDate[1].equals(endDate[1]) && currentDate[2].equals(endDate[2])){
+            Log.i(TAG,"true");
+            return true;
+        }else {
+            Log.i(TAG,"false");
+            return false;
+        }
+    }
 
 }

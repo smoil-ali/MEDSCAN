@@ -6,13 +6,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.AlarmList">
 
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Blue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textColorSelected="#FFFF"/>
 
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/Rv"
+            app:layout_constraintTop_toBottomOf="@id/calendarView"
             />
 
 

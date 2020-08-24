@@ -102,15 +102,7 @@ public class AddMedicineForm1 extends Fragment implements categoryAdapterListene
     }
 
     public void moreMenu(){
-        PopupMenu menu=new PopupMenu(getContext(),binding.moreMenu);
-        menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
-        menu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.ocr_text){
-                startActivity(new Intent(getContext(), ImageScannerActivity.class));
-            }
-            return true;
-        });
-        menu.show();
+        startActivity(new Intent(getContext(), ImageScannerActivity.class));
     }
 
     private void openFragment(){

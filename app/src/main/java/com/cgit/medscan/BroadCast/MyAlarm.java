@@ -47,6 +47,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static androidx.legacy.content.WakefulBroadcastReceiver.startWakefulService;
+import static com.cgit.medscan.Model.Constants.ERROR;
 import static com.cgit.medscan.Model.Constants.NOTIFICATION_CHANNEL_ID;
 import static com.cgit.medscan.Model.Constants.NOTIFICATION_ID;
 
@@ -134,12 +135,8 @@ public class MyAlarm extends BroadcastReceiver {
                 }else {
                     Log.i(TAG,"Finish For Today!!!");
                     val = medicalFormData.getMedicineTimeInDay();
-                    nextAlarm = getDayInterval();
-                    Log.i(TAG,"Next Alarm Date "+simpleDateFormat.format(new Date(nextAlarm)));
-                    int Id = (int) nextAlarm;
-                    updateInitialTime(context,Id,nextAlarm);
-                    setAlarm(context,nextAlarm);
-                    Utils.setSharedPref(context,(int) nextAlarm,val);
+                    setDataToModelClass(context,val);
+
                     // set Next Alarm
                 }
             }
@@ -235,14 +232,7 @@ public class MyAlarm extends BroadcastReceiver {
         }
     }
 
-    private long getIntervalInMillis(){
-        int hrs = Container.getForm2ModelClass().getIntervalHour();
-        int min = Container.getForm2ModelClass().getIntervalMinute();
-        long hrsInMillis = 1000*60*60*hrs;
-        long minInMillis = 1000*60*min;
-        long Total  = hrsInMillis + minInMillis;
-        return Total;
-    }
+
 
     private long getDayInterval(){
         long hrs = 1000*60*60*24;
@@ -271,4 +261,70 @@ public class MyAlarm extends BroadcastReceiver {
                     }
                 });
     }
+
+    private void setDataToModelClass(Context context,int val){
+        SimpleDateFormat sdf =new SimpleDateFormat("YYYY-MM-dd hh-mm-aa");
+        long startTime = getDayInterval();
+        Log.i(TAG,"start time "+sdf.format(new Date(startTime)));
+        long FinalTime = startTime;
+        setAlarm(context,startTime);
+        Utils.setSharedPref(context,(int) startTime,val);
+        for (int i=0;i<medicalFormData.getMedicineTimeInDay();i++){
+            Log.i(TAG,"final time "+sdf.format(new Date(FinalTime)));
+            MedicalFormData model = new MedicalFormData();
+            model.setMedicineName(medicalFormData.getMedicineName());
+            model.setMedicineCategory(medicalFormData.getMedicineCategory());
+            model.setColor(medicalFormData.getColor());
+            model.setMedicineQuantity(medicalFormData.getMedicineQuantity());
+            model.setMedicineTimeOfTaken(FinalTime);
+            model.setMedicineStatus(false);
+            model.setAlarmStatus(false);
+            model.setAlarmId((int) FinalTime);
+            model.setIntervalHour(medicalFormData.getIntervalHour());
+            model.setIntervalMinute(medicalFormData.getIntervalMinute());
+            model.setMedicineTimeInDay(medicalFormData.getMedicineTimeInDay());
+            model.setEndTime(medicalFormData.getEndTime());
+            model.setINITIAL_TIME(startTime);
+            FinalTime = FinalTime+getIntervalInMillis();
+            storeData(model,context);
+        }
+
+
+    }
+
+
+    private long getIntervalInMillis(){
+        int hrs = medicalFormData.getIntervalHour();
+        int min = medicalFormData.getIntervalMinute();
+        long hrsInMillis = 1000*60*60*hrs;
+        long minInMillis = 1000*60*min;
+        long Total  = hrsInMillis + minInMillis;
+        Log.i(TAG, String.valueOf(new Date(Total)));
+        return Total;
+    }
+
+
+    public void storeData(MedicalFormData model,Context context){
+        DatabaseClient.getInstance(context).getAppDatabase().MedicineDao()
+                .insert(model)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG,"new data added");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG,e.getMessage());
+                    }
+                });
+    }
 }
+

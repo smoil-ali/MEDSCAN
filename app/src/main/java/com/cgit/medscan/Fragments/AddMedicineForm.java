@@ -164,7 +164,6 @@ public class AddMedicineForm extends Fragment implements QuantityListener, categ
         boolean check = true;
         Container.getForm2ModelClass().setEndTime(getEndTime());
         for (int i = 0;i <Container.getForm2ModelClass().getDataList().size();i++){
-            Calendar calendar = Calendar.getInstance();
             MedicalFormData model = new MedicalFormData();
             AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
 
